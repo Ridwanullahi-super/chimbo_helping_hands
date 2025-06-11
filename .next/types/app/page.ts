@@ -1,4 +1,4 @@
-// File: /home/project/app/page.tsx
+// File: C:\Users\HP-PC\Downloads\chimbo_helping_hands_v2\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
