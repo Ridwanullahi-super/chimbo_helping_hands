@@ -30,6 +30,14 @@ interface Blog {
   updated_at: string
   tags: string[]
 }
+  interface BlogResponse {
+  blogs: Blog[]
+  pagination: {
+    totalPages: number
+  }
+}
+ 
+
 
 export default function AdminBlogsPage() {
   const { user, isAdmin, loading } = useAuth()
@@ -53,28 +61,31 @@ export default function AdminBlogsPage() {
     }
   }, [loading, isAdmin, router, currentPage, searchTerm, statusFilter])
 
-  const loadBlogs = async () => {
-    try {
-      setIsLoading(true)
-      const response = await api.getBlogs(currentPage, 10, searchTerm)
-      
-      if (response.success && response.data) {
-        let filteredBlogs = response.data.blogs
-        
-        if (statusFilter !== 'all') {
-          filteredBlogs = filteredBlogs.filter(blog => blog.status === statusFilter)
-        }
-        
-        setBlogs(filteredBlogs)
-        setTotalPages(response.data.pagination.totalPages)
+const loadBlogs = async () => {
+  try {
+    setIsLoading(true)
+    const response = await api.getBlogs(currentPage, 10, searchTerm)
+
+    if (response.success && response.data) {
+      const data = response.data as BlogResponse
+
+      let filteredBlogs = data.blogs
+
+      if (statusFilter !== 'all') {
+        filteredBlogs = filteredBlogs.filter(blog => blog.status === statusFilter)
       }
-    } catch (error) {
-      console.error('Failed to load blogs:', error)
-      toast.error('Failed to load blog posts')
-    } finally {
-      setIsLoading(false)
+
+      setBlogs(filteredBlogs)
+      setTotalPages(data.pagination.totalPages)
     }
+  } catch (error) {
+    console.error('Failed to load blogs:', error)
+    toast.error('Failed to load blog posts')
+  } finally {
+    setIsLoading(false)
   }
+}
+
 
   const handleDelete = async (id: number, title: string) => {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) {
