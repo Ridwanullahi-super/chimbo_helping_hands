@@ -61,30 +61,43 @@ export default function AdminBlogsPage() {
     }
   }, [loading, isAdmin, router, currentPage, searchTerm, statusFilter])
 
+// i change this loadBlogs function to use the api.getBlogs method
+
 const loadBlogs = async () => {
   try {
     setIsLoading(true)
     const response = await api.getBlogs(currentPage, 10, searchTerm)
 
-    if (response.success && response.data) {
-      const data = response.data as BlogResponse
-
-      let filteredBlogs = data.blogs
-
-      if (statusFilter !== 'all') {
-        filteredBlogs = filteredBlogs.filter(blog => blog.status === statusFilter)
-      }
-
-      setBlogs(filteredBlogs)
-      setTotalPages(data.pagination.totalPages)
+    // Validate response
+    if (!response || !response.success || typeof response.data !== 'object') {
+      throw new Error('Unexpected response format')
     }
+
+    const data = response.data as Partial<BlogResponse>
+
+    if (!Array.isArray(data.blogs)) {
+      throw new Error('Blog list missing or invalid')
+    }
+
+    let filteredBlogs = data.blogs
+
+    if (statusFilter !== 'all') {
+      filteredBlogs = filteredBlogs.filter(blog => blog.status === statusFilter)
+    }
+
+    setBlogs(filteredBlogs)
+    setTotalPages(data.pagination?.totalPages || 1)
+
   } catch (error) {
     console.error('Failed to load blogs:', error)
     toast.error('Failed to load blog posts')
+    setBlogs([])         // Prevents rendering errors
+    setTotalPages(1)     // Fallback for pagination
   } finally {
     setIsLoading(false)
   }
 }
+
 
 
   const handleDelete = async (id: number, title: string) => {
