@@ -1,5 +1,41 @@
-node_modules
-node_modules
+/node_modules
+.env
+*.log
+*.zip
+*.sql
 .env
 .env.example
 .env.local.example
+.DS_Store
+# Ignore build artifacts
+/dist
+
+# Ignore coverage reports
+/coverage   
+# Ignore IDE specific files
+/.idea
+/.vscode
+# Ignore temporary files
+*.tmp
+# Ignore system files
+.DS_Store
+# Ignore test output
+/test-output    
+# Ignore local configuration files
+/.env.local 
+# Ignore lock files
+/package-lock.json
+# Ignore yarn lock files
+/yarn.lock
+# Ignore pnpm lock files    
+/pnpm-lock.yaml
+# Ignore build directories
+/build  
+# Ignore documentation files
+/docs
+# Ignore cache directories
+/.cache
+# Ignore logs
+/logs   
+# Ignore temporary files
+/tmp    
